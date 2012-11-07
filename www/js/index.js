@@ -18,25 +18,44 @@
  */
 var app = {
     initialize: function() {
-        this.bind();
+        this.getQuestionsList();
     },
-    bind: function() {
-        document.addEventListener('deviceready', this.deviceready, false);
-    },
-    deviceready: function() {
-        // This is an event handler function, which means the scope is the event.
-        // So, we must explicitly called `app.report()` instead of `this.report()`.
-        app.report('deviceready');
-    },
-    report: function(id) {
-        // Report the event in the console
-        console.log("Report: " + id);
+    getQuestionsList: function() {
 
-        // Toggle the state from "pending" to "complete" for the reported ID.
-        // Accomplished by adding .hide to the pending element and removing
-        // .hide from the complete element.
-        document.querySelector('#' + id + ' .pending').className += ' hide';
-        var completeElem = document.querySelector('#' + id + ' .complete');
-        completeElem.className = completeElem.className.split('hide').join('');
+        jQuery.ajax({
+            url: "http://4it445.vse.cz/teams/zs1213_e/public/rest/get-questions",
+            dataType: 'jsonp',
+            success: function(data) {
+                console.log(data);
+                jQuery('#questionsList li').remove();
+                
+                questions = data;
+                $.each(questions, function(index, question) {
+                    $('#questionsList').append('<li><a href="questiondetail.html?id=' + question.id + '">' +
+                            '<h4>Otázka ' + question.id + '</h4>' +
+                            '</a></li>');
+                });
+                jQuery('#questionsList').listview('refresh');
+            }
+        })
     }
-};
+}
+
+$('#detailsPage').live('pageshow', function(event) {
+    var id = getUrlVars()["id"];
+    if(id){
+        jQuery('.questionId').text(id);
+    }
+});
+
+function getUrlVars() {
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
