@@ -16,17 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var app = {
-    initialize: function() {
-        this.getQuestionsList();
-    },
-    getQuestionsList: function() {
+
+$("#homepage").live('pagecreate', function(event){
+    getQuestionsList();
+    function getQuestionsList() {
 
         jQuery.ajax({
             url: "http://4it445.vse.cz/teams/zs1213_e/public/rest/get-questions",
             dataType: 'jsonp',
             success: function(data) {
-                console.log(data);
                 jQuery('#questionsList li').remove();
                 
                 questions = data;
@@ -39,7 +37,7 @@ var app = {
             }
         })
     }
-}
+})
 
 $('#detailsPage').live('pageshow', function(event) {
     var id = getUrlVars()["id"];
