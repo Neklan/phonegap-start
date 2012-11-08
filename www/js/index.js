@@ -17,6 +17,12 @@
  * under the License.
  */
 
+$( document ).bind( "mobileinit", function() {
+    // Make your jQuery Mobile framework configuration changes here!
+    $.mobile.cors = true;
+    $.mobile.allowCrossDomainPages = true;
+});
+
 $("#homepage").live('pagecreate', function(event){
     getQuestionsList();
     function getQuestionsList() {
